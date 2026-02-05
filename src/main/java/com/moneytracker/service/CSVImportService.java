@@ -74,7 +74,7 @@ public class CSVImportService {
 
         // Find or create category
         String categoryName = record.get("Category");
-        Category category = categoryRepository.findByName(categoryName)
+        Category category = categoryRepository.findByNameAndUserId(categoryName, user.getId())
                 .orElseGet(() -> createDefaultCategory(categoryName));
         transaction.setCategory(category);
 

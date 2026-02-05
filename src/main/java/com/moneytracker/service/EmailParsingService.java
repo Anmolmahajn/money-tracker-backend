@@ -175,7 +175,7 @@ public class EmailParsingService {
                     BigDecimal amount = new BigDecimal(amountStr);
                     
                     // Find or create category
-                    Category category = categoryRepository.findByName(pattern.defaultCategory)
+                    Category category = categoryRepository.findByNameAndUserId(pattern.defaultCategory, user.getId())
                         .orElseGet(() -> createDefaultCategory(pattern.defaultCategory));
                     
                     // Create transaction

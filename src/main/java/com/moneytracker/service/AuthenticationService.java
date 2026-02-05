@@ -1,5 +1,6 @@
 package com.moneytracker.service;
 
+import com.moneytracker.config.UserCategoryInitializer;
 import com.moneytracker.dto.auth.AuthResponse;
 import com.moneytracker.dto.auth.LoginRequest;
 import com.moneytracker.dto.auth.RegisterRequest;
@@ -25,6 +26,7 @@ public class AuthenticationService {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsServiceImpl userDetailsService;
+    private final UserCategoryInitializer categoryInitializer;  // ✅ ADDED
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
@@ -44,7 +46,11 @@ public class AuthenticationService {
         user.setRoles(Set.of("ROLE_USER"));
         user.setIsActive(true);
 
-        userRepository.save(user);
+        // Save user first
+        user = userRepository.save(user);
+
+        // ✅ SECURE - Create default categories for new user
+        categoryInitializer.createDefaultCategoriesForUser(user);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
         String token = jwtUtil.generateToken(userDetails);
