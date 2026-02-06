@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "categories")
+@Table(name = "categories",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "name"}))  // ✅ Composite unique
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,7 +31,7 @@ public class Category {
     private User user;  // ✅ ADDED - Each category belongs to a user
 
     @NotBlank(message = "Category name is required")
-    @Column(nullable = false)
+    @Column(nullable = false)  // ✅ NO unique=true here!
     private String name;
 
     @Column(columnDefinition = "TEXT")

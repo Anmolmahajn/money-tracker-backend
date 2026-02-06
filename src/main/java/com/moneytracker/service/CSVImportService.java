@@ -72,10 +72,10 @@ public class CSVImportService {
         transaction.setDescription(record.get("Description"));
         transaction.setAmount(new BigDecimal(record.get("Amount")));
 
-        // Find or create category
+        // ✅ SECURE - Find category for THIS USER only
         String categoryName = record.get("Category");
         Category category = categoryRepository.findByNameAndUserId(categoryName, user.getId())
-                .orElseGet(() -> createDefaultCategory(categoryName));
+                .orElseGet(() -> createDefaultCategory(categoryName, user));  // ✅ Pass user
         transaction.setCategory(category);
 
         // Parse payment method
@@ -95,8 +95,12 @@ public class CSVImportService {
         return transaction;
     }
 
-    private Category createDefaultCategory(String categoryName) {
+    /**
+     * ✅ SECURE - Creates category for specific user
+     */
+    private Category createDefaultCategory(String categoryName, User user) {
         Category category = new Category();
+        category.setUser(user);  // ✅ CRITICAL - Set the owner!
         category.setName(categoryName);
         category.setDescription("Auto-created from CSV import");
         category.setColorCode("#667eea");
@@ -104,7 +108,7 @@ public class CSVImportService {
     }
 
     public String generateCSVTemplate() {
-        return "Date,Description,Amount,Category,PaymentMethod,Notes\\n" +
-                "2026-01-31,Sample Transaction,1000.00,Food & Dining,UPI,Sample notes\\n";
+        return "Date,Description,Amount,Category,PaymentMethod,Notes\n" +
+                "2026-01-31,Sample Transaction,1000.00,Food & Dining,UPI,Sample notes\n";
     }
 }
