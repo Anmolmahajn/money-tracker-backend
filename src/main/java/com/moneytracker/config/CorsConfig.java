@@ -1,5 +1,6 @@
 package com.moneytracker.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -8,21 +9,23 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 public class CorsConfig {
+
+    @Value("${frontend.url}")
+    private String frontendUrl;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Allow requests from these origins
-        configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:3000",      // React frontend
-                "http://localhost:3001",      // Alternative React port
-                "http://127.0.0.1:3000",
-                "http://127.0.0.1:3001"
-        ));
+        List<String> origins = Arrays.stream(frontendUrl.split(","))
+                .map(String::trim)  // Remove any accidental spaces
+                .collect(Collectors.toList());
+
+        configuration.setAllowedOrigins(origins);
 
         // Allow all origins for development (use with caution in production)
         configuration.setAllowedOriginPatterns(Arrays.asList("*"));
