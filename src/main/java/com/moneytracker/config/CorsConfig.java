@@ -22,41 +22,28 @@ public class CorsConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         List<String> origins = Arrays.stream(frontendUrl.split(","))
-                .map(String::trim)  // Remove any accidental spaces
+                .map(String::trim)
                 .collect(Collectors.toList());
 
+        // ✅ Explicit origins only (REQUIRED with credentials)
         configuration.setAllowedOrigins(origins);
 
-        // Allow all origins for development (use with caution in production)
-        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
-
-        // Allow these HTTP methods
-        configuration.setAllowedMethods(Arrays.asList(
+        // ✅ Allowed HTTP methods
+        configuration.setAllowedMethods(List.of(
                 "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"
         ));
 
-        // Allow these headers
-        configuration.setAllowedHeaders(Arrays.asList(
-                "Authorization",
-                "Content-Type",
-                "X-Requested-With",
-                "Accept",
-                "Origin",
-                "Access-Control-Request-Method",
-                "Access-Control-Request-Headers"
-        ));
+        // ✅ Allowed headers
+        configuration.setAllowedHeaders(List.of("*"));
 
-        // Expose these headers
-        configuration.setExposedHeaders(Arrays.asList(
-                "Access-Control-Allow-Origin",
-                "Access-Control-Allow-Credentials",
+        // ✅ Exposed headers
+        configuration.setExposedHeaders(List.of(
                 "Authorization"
         ));
 
-        // Allow credentials (cookies, authorization headers)
+        // ✅ Required for JWT / cookies
         configuration.setAllowCredentials(true);
 
-        // How long the response from a pre-flight request can be cached
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -65,3 +52,4 @@ public class CorsConfig {
         return source;
     }
 }
+
