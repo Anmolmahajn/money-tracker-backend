@@ -14,13 +14,14 @@ FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 
 # Copy JAR from build stage
-COPY --from=build /app/target/money-tracker-backend-1.0.0.jar app.jar
+COPY --from=build /app/target/*.jar app.jar
 
 # Expose port
 EXPOSE 8080
 
-# Set environment variables
+# Environment variables
 ENV SPRING_PROFILES_ACTIVE=prod
+ENV SERVER_PORT=8080
 
-# Run application
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+# Run application - bind to 0.0.0.0
+ENTRYPOINT ["java", "-Dserver.address=0.0.0.0", "-jar", "/app/app.jar"]
