@@ -16,8 +16,7 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOrigins(List.of(
-                "http://localhost:3000",
-                "https://moneytracker18.netlify.app"
+                "*"
         ));
 
         config.setAllowedMethods(List.of(
